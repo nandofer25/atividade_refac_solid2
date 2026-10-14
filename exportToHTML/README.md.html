@@ -1,0 +1,66 @@
+<html>
+<head>
+<title>README.md</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #c77dbb; font-style: italic;}
+.s4 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#191a1c">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+README.md</font>
+</center></td></tr></table>
+<pre><span class="s0"># </span><span class="s2">API de Livros — versão refatorada com SOLID</span>
+
+<span class="s2">Projeto Spring Boot com Java 21, Spring Data JPA e banco H2 em memória.</span>
+
+<span class="s0">## </span><span class="s2">Endpoints</span>
+<span class="s0">- </span><span class="s2">`GET /livros`</span><span class="s1">: </span><span class="s2">lista os livros.</span>
+<span class="s0">- </span><span class="s2">`POST /livros`</span><span class="s1">: </span><span class="s2">cadastra um livro.</span>
+<span class="s0">- </span><span class="s2">`PUT /livros/{id}`</span><span class="s1">: </span><span class="s2">atualiza um livro.</span>
+<span class="s0">- </span><span class="s2">`DELETE /livros/{id}`</span><span class="s1">: </span><span class="s2">remove um livro </span><span class="s1">(</span><span class="s2">livros da categoria `RARO` não podem ser removidos</span><span class="s1">)</span><span class="s2">.</span>
+
+<span class="s2">Exemplo de cadastro</span><span class="s1">:</span>
+<span class="s0">```</span><span class="s3">json</span>
+<span class="s4">{</span>
+  <span class="s4">&quot;titulo&quot;: &quot;Clean Code&quot;,</span>
+  <span class="s4">&quot;autor&quot;: &quot;Robert C. Martin&quot;,</span>
+  <span class="s4">&quot;preco&quot;: 120.0,</span>
+  <span class="s4">&quot;categoria&quot;: &quot;TECNOLOGIA&quot;</span>
+<span class="s4">}</span>
+<span class="s0">```</span>
+
+<span class="s0">## </span><span class="s2">Organização</span>
+<span class="s0">- </span><span class="s2">`controllers`</span><span class="s1">: </span><span class="s2">endpoints HTTP e tratamento de erros.</span>
+<span class="s0">- </span><span class="s2">`contracts`</span><span class="s1">: </span><span class="s2">interfaces e contratos.</span>
+<span class="s0">- </span><span class="s2">`entities`</span><span class="s1">: </span><span class="s2">entidade JPA `Livro`.</span>
+<span class="s0">- </span><span class="s2">`repositories`</span><span class="s1">: </span><span class="s2">acesso aos dados.</span>
+<span class="s0">- </span><span class="s2">`services`</span><span class="s1">: </span><span class="s2">regras de negócio, relatórios e e-mail.</span>
+<span class="s0">- </span><span class="s2">`services/descontos`</span><span class="s1">: </span><span class="s2">estratégias de desconto por categoria.</span>
+
+<span class="s0">## </span><span class="s2">SOLID aplicado</span>
+<span class="s0">- </span><span class="s1">**</span><span class="s2">SRP </span><span class="s1">(</span><span class="s2">Responsabilidade Única</span><span class="s1">):** </span><span class="s2">controller, serviço de livros, descontos, relatório, e-mail, ERP e etiquetas têm responsabilidades separadas.</span>
+<span class="s0">- </span><span class="s1">**</span><span class="s2">OCP </span><span class="s1">(</span><span class="s2">Aberto/Fechado</span><span class="s1">):** </span><span class="s2">`DescontoService` recebe uma lista de `PoliticaDesconto`. Para adicionar uma categoria, crie uma nova implementação e não altere o serviço central.</span>
+<span class="s0">- </span><span class="s1">**</span><span class="s2">LSP </span><span class="s1">(</span><span class="s2">Substituição de Liskov</span><span class="s1">):** </span><span class="s2">cada estratégia de desconto implementa `PoliticaDesconto` e pode ser usada pelo serviço sem alterar seu fluxo.</span>
+<span class="s0">- </span><span class="s1">**</span><span class="s2">ISP </span><span class="s1">(</span><span class="s2">Segregação de Interfaces</span><span class="s1">):** </span><span class="s2">contratos separados para livros, relatórios, e-mail, ERP e etiquetas; cada implementação assume apenas o contrato correspondente.</span>
+<span class="s0">- </span><span class="s1">**</span><span class="s2">DIP </span><span class="s1">(</span><span class="s2">Inversão de Dependência</span><span class="s1">):** </span><span class="s2">o Spring injeta dependências por construtor; o mecanismo de desconto depende da abstração `PoliticaDesconto`, não de classes concretas.</span>
+
+<span class="s0">## </span><span class="s2">Regras mantidas</span>
+<span class="s0">- </span><span class="s2">Título obrigatório e preço maior que zero.</span>
+<span class="s0">- </span><span class="s2">Descontos no cadastro</span><span class="s1">: </span><span class="s2">ROMANCE 10%, TECNOLOGIA 20%, INFANTIL 30%, HQ 40%.</span>
+<span class="s0">- </span><span class="s2">Atualização não reaplica desconto automaticamente.</span>
+<span class="s0">- </span><span class="s2">Livros da categoria `RARO` não podem ser removidos.</span>
+<span class="s0">- </span><span class="s2">PDF, ERP e etiquetas continuam explicitamente não implementados; agora estão isolados em serviços próprios.</span>
+
+<span class="s0">## </span><span class="s2">Executar</span>
+<span class="s2">Abra o projeto no IntelliJ com JDK 21 e execute `AtividadeRefacApplication`.</span>
+<span class="s2">O banco H2 é em memória e reinicia com a aplicação.</span>
+</pre>
+</body>
+</html>
